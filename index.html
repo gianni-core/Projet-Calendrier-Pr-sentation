@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Calendrier de Janvier</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; background-color: #f0f4f8; }
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); 
+            gap: 10px; 
+            padding: 20px; 
+            max-width: 800px; 
+            margin: auto; 
+        }
+        .day { 
+            background-color: #3498db; 
+            color: white; 
+            padding: 30px 10px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        .day:hover { background-color: #2980b9; transform: scale(1.05); }
+    </style>
+</head>
+<body>
+
+    <h1>❄️ Calendrier de l'Avent de Janvier ❄️</h1>
+    <p>Clique sur le jour pour voir ton défi !</p>
+
+    <div class="grid" id="calendar">
+        </div>
+
+    <script>
+        const calendar = document.getElementById('calendar');
+        
+        // Liste de petits défis (tu peux les changer !)
+        const defis = [
+            "Maths : Calcule 15% de 80.",
+            "Français : Trouve 3 synonymes du mot 'Grand'.",
+            "Anglais : Comment dit-on 'J'ai faim' ?",
+            "Histoire : En quelle année a commencé la Révolution Française ?",
+            "Géo : Quelle est la capitale de l'Italie ?",
+            "Sciences : De quoi est composée une molécule d'eau ?",
+            // ... Ajoute tes 31 défis ici
+        ];
+
+        for (let i = 1; i <= 31; i++) {
+            let div = document.createElement('div');
+            div.className = 'day';
+            div.innerHTML = i;
+            div.onclick = function() {
+                // On récupère le défi correspondant au jour (i-1 car la liste commence à 0)
+                let message = defis[i-1] || "Défi à venir !";
+                alert("Jour " + i + " : " + message);
+            };
+            calendar.appendChild(div);
+        }
+    </script>
+
+</body>
+</html>
