@@ -2,123 +2,105 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendrier de Janvier - Défis Collège</title>
+    <title>Calendrier de Janvier - Collège</title>
     <style>
-        :root {
-            --primary: #2c3e50;
-            --accent: #3498db;
-            --success: #27ae60;
-        }
-        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; color: var(--primary); margin: 0; padding: 20px; }
-        .container { max-width: 900px; margin: auto; }
+        /* Design Moderne & Responsive */
+        :root { --main: #2563eb; --bg: #f8fafc; --text: #1e293b; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        .container { max-width: 800px; margin: 40px auto; padding: 20px; }
         
-        /* Grille du calendrier */
-        .grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); 
-            gap: 10px; 
-            margin-bottom: 30px; 
+        /* Grille des jours */
+        .calendar-grid { 
+            display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-bottom: 40px; 
         }
-        .day-link { 
-            background: white; border: 2px solid var(--accent); color: var(--accent);
-            padding: 15px; border-radius: 10px; text-decoration: none;
-            font-weight: bold; text-align: center; transition: 0.3s;
+        .day-btn { 
+            background: white; border: 1px solid #e2e8f0; padding: 15px 5px; 
+            text-decoration: none; border-radius: 8px; text-align: center; 
+            font-weight: 600; color: var(--main); transition: all 0.2s;
         }
-        .day-link:hover { background: var(--accent); color: white; }
+        .day-btn:hover { background: var(--main); color: white; transform: translateY(-2px); }
 
-        /* Zone du défi */
-        #challenge-box { 
-            background: white; padding: 30px; border-radius: 15px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center;
-            min-height: 200px;
+        /* Zone d'exercice */
+        .challenge-card { 
+            background: white; border-radius: 16px; padding: 30px; 
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border-top: 5px solid var(--main);
         }
-        input { padding: 10px; border: 2px solid #ddd; border-radius: 5px; width: 60%; margin-top: 10px; }
-        button { padding: 10px 20px; background: var(--accent); color: white; border: none; border-radius: 5px; cursor: pointer; }
-        #feedback { margin-top: 15px; font-weight: bold; }
+        .badge { background: #dbeafe; color: var(--main); padding: 4px 12px; border-radius: 20px; font-size: 0.8em; }
+        input { width: 100%; padding: 12px; margin: 20px 0; border: 2px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; }
+        button { background: var(--main); color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; width: 100%; font-size: 1em; }
+        #result-msg { margin-top: 20px; font-weight: bold; min-height: 24px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>🎯 Calendrier des Défis de Janvier</h1>
-    
-    <div class="grid" id="nav-grid"></div>
+    <header>
+        <h1>🗓️ Calendrier de la Réussite</h1>
+        <p>Un défi par jour pour bien commencer l'année !</p>
+    </header>
 
-    <div id="challenge-box">
-        <h2 id="title">Choisis un jour pour commencer !</h2>
-        <p id="question">L'exercice s'affichera ici.</p>
-        <div id="input-zone" style="display:none;">
-            <input type="text" id="user-answer" placeholder="Ta réponse ici...">
-            <button onclick="checkAnswer()">Vérifier</button>
-            <p id="feedback"></p>
-        </div>
+    <nav class="calendar-grid" id="grid"></nav>
+
+    <div class="challenge-card" id="card" style="display:none">
+        <span class="badge" id="subject">Matière</span>
+        <h2 id="day-title">Jour X</h2>
+        <p id="question">La question s'affiche ici...</p>
+        
+        <input type="text" id="answer-input" placeholder="Tapez votre réponse ici...">
+        <button onclick="verify()">Valider ma réponse</button>
+        <p id="result-msg"></p>
     </div>
 </div>
 
 <script>
-    // Configuration des jours
+    // Tutoriel : Pour ajouter des questions, modifie ce tableau "data"
     const data = {
-        1: { q: "Maths : Combien font $12 \times 12$ ?", a: "144", t: "Calcul Mental" },
-        2: { q: "Anglais : Traduis le mot 'Winter'.", a: "hiver", t: "Vocabulaire" },
-        3: { q: "Français : Quel est le participe passé du verbe 'Prendre' ?", a: "pris", t: "Grammaire" },
-        // Ajoute les autres jours ici...
+        1: { s: "MATHS", q: "Quelle est la racine carrée de 81 ?", a: "9" },
+        2: { s: "ANGLAIS", q: "Traduis le verbe 'To Eat' en français.", a: "manger" },
+        3: { s: "HISTOIRE", q: "En quel siècle a vécu Louis XIV ?", a: "17" },
+        // ... ajoute la suite ici
     };
 
-    const grid = document.getElementById('nav-grid');
-    let currentDay = null;
+    const grid = document.getElementById('grid');
+    let activeDay = null;
 
-    // Création des boutons du calendrier
-    for (let i = 1; i <= 31; i++) {
-        let a = document.createElement('a');
-        a.href = "#jour" + i;
-        a.className = "day-link";
-        a.innerText = i;
-        a.onclick = () => loadChallenge(i);
-        grid.appendChild(a);
+    // Génération de la grille
+    for(let i=1; i<=31; i++) {
+        const link = document.createElement('a');
+        link.href = "#day" + i;
+        link.className = "day-btn";
+        link.innerText = i;
+        link.onclick = () => loadDay(i);
+        grid.appendChild(link);
     }
 
-    function loadChallenge(day) {
-        currentDay = day;
-        const challenge = data[day];
-        const box = document.getElementById('input-zone');
-        const feedback = document.getElementById('feedback');
+    function loadDay(day) {
+        activeDay = day;
+        const item = data[day];
+        document.getElementById('card').style.display = "block";
+        document.getElementById('result-msg').innerText = "";
+        document.getElementById('answer-input').value = "";
         
-        if (challenge) {
-            document.getElementById('title').innerText = "Jour " + day + " : " + challenge.t;
-            document.getElementById('question').innerText = challenge.q;
-            box.style.display = "block";
-            document.getElementById('user-answer').value = "";
-            feedback.innerText = "";
+        if(item) {
+            document.getElementById('subject').innerText = item.s;
+            document.getElementById('day-title').innerText = "Défi du " + day + " Janvier";
+            document.getElementById('question').innerText = item.q;
         } else {
-            document.getElementById('title').innerText = "Jour " + day;
-            document.getElementById('question').innerText = "Défi bientôt disponible !";
-            box.style.display = "none";
+            document.getElementById('question').innerText = "Défi en cours de préparation par vos professeurs !";
         }
     }
 
-    function checkAnswer() {
-        const userVal = document.getElementById('user-answer').value.toLowerCase().trim();
-        const feedback = document.getElementById('feedback');
-        
-        if (userVal === data[currentDay].a.toLowerCase()) {
-            feedback.innerText = "✅ Bravo ! C'est la bonne réponse.";
-            feedback.style.color = "green";
+    function verify() {
+        const userAns = document.getElementById('answer-input').value.toLowerCase().trim();
+        const msg = document.getElementById('result-msg');
+        if(userAns === data[activeDay].a.toLowerCase()) {
+            msg.innerHTML = "✅ Excellent ! Bonne réponse.";
+            msg.style.color = "#059669";
         } else {
-            feedback.innerText = "❌ Réessaie encore !";
-            feedback.style.color = "red";
+            msg.innerHTML = "❌ Ce n'est pas tout à fait ça, réessaie !";
+            msg.style.color = "#dc2626";
         }
     }
-
-    // Gestion de l'ancre au chargement de la page (ex: site.com/#jour1)
-    window.onload = () => {
-        const hash = window.location.hash;
-        if (hash.startsWith("#jour")) {
-            const day = hash.replace("#jour", "");
-            loadChallenge(day);
-        }
-    };
 </script>
-
 </body>
 </html>
