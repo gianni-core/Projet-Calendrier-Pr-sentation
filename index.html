@@ -2,105 +2,277 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Calendrier de Janvier - Collège</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendrier de la Réussite - Officiel</title>
     <style>
-        /* Design Moderne & Responsive */
-        :root { --main: #2563eb; --bg: #f8fafc; --text: #1e293b; }
-        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
-        .container { max-width: 800px; margin: 40px auto; padding: 20px; }
-        
-        /* Grille des jours */
-        .calendar-grid { 
-            display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-bottom: 40px; 
+        :root {
+            --primary: #1e40af;
+            --primary-light: #dbeafe;
+            --accent: #3b82f6;
+            --success: #10b981;
+            --error: #ef4444;
+            --bg: #f1f5f9;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
         }
-        .day-btn { 
-            background: white; border: 1px solid #e2e8f0; padding: 15px 5px; 
-            text-decoration: none; border-radius: 8px; text-align: center; 
-            font-weight: 600; color: var(--main); transition: all 0.2s;
-        }
-        .day-btn:hover { background: var(--main); color: white; transform: translateY(-2px); }
 
-        /* Zone d'exercice */
-        .challenge-card { 
-            background: white; border-radius: 16px; padding: 30px; 
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border-top: 5px solid var(--main);
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
         }
-        .badge { background: #dbeafe; color: var(--main); padding: 4px 12px; border-radius: 20px; font-size: 0.8em; }
-        input { width: 100%; padding: 12px; margin: 20px 0; border: 2px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; }
-        button { background: var(--main); color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; width: 100%; font-size: 1em; }
-        #result-msg { margin-top: 20px; font-weight: bold; min-height: 24px; }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            padding: 40px 20px;
+            box-sizing: border-box;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 0;
+            color: var(--primary);
+            letter-spacing: -0.025em;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-top: 8px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .day-btn {
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--surface);
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            color: var(--text-main);
+            font-size: 1.1rem;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .day-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .day-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .challenge-card {
+            background: var(--surface);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+            animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 6px 16px;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 16px;
+        }
+
+        h2 { margin: 0 0 12px 0; font-size: 1.75rem; }
+        
+        .question-text {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        input {
+            width: 100%;
+            padding: 16px;
+            font-size: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+            outline: none;
+        }
+
+        input:focus { border-color: var(--accent); }
+
+        button {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 14px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        button:hover { opacity: 0.9; }
+
+        #result-msg {
+            margin-top: 24px;
+            text-align: center;
+            font-weight: 600;
+            padding: 12px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .calendar-grid { grid-template-columns: repeat(5, 1fr); }
+            h1 { font-size: 1.75rem; }
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1>🗓️ Calendrier de la Réussite</h1>
-        <p>Un défi par jour pour bien commencer l'année !</p>
+        <h1>Calendrier de la Réussite</h1>
+        <p>Gianni • Session Janvier 2026</p>
     </header>
 
     <nav class="calendar-grid" id="grid"></nav>
 
     <div class="challenge-card" id="card" style="display:none">
-        <span class="badge" id="subject">Matière</span>
-        <h2 id="day-title">Jour X</h2>
-        <p id="question">La question s'affiche ici...</p>
-        
-        <input type="text" id="answer-input" placeholder="Tapez votre réponse ici...">
-        <button onclick="verify()">Valider ma réponse</button>
-        <p id="result-msg"></p>
+        <div id="content-area">
+            <span class="badge" id="subject"></span>
+            <h2 id="day-title"></h2>
+            <p class="question-text" id="question"></p>
+            
+            <div class="input-group">
+                <input type="text" id="answer-input" placeholder="Entrez votre réponse..." autocomplete="off">
+            </div>
+            <button onclick="verifyAnswer()">Vérifier la réponse</button>
+            <div id="result-msg"></div>
+        </div>
     </div>
 </div>
 
 <script>
-    // Tutoriel : Pour ajouter des questions, modifie ce tableau "data"
     const data = {
-        1: { s: "MATHS", q: "Quelle est la racine carrée de 81 ?", a: "9" },
-        2: { s: "ANGLAIS", q: "Traduis le verbe 'To Eat' en français.", a: "manger" },
-        3: { s: "HISTOIRE", q: "En quel siècle a vécu Louis XIV ?", a: "17" },
-        // ... ajoute la suite ici
+        1: { s: "Mathématiques", q: "Quelle est la racine carrée de 81 ?", a: "9" },
+        2: { s: "Anglais", q: "Traduisez le verbe 'To Eat' en français.", a: "manger" },
+        3: { s: "Histoire", q: "En quel siècle a vécu Louis XIV ?", a: "17" },
+        4: { s: "Géographie", q: "Quelle est la capitale du Japon ?", a: "tokyo" },
+        5: { s: "SVT", q: "Quel organe pompe le sang dans le corps ?", a: "coeur" }
     };
 
     const grid = document.getElementById('grid');
+    const card = document.getElementById('card');
     let activeDay = null;
 
-    // Génération de la grille
     for(let i=1; i<=31; i++) {
-        const link = document.createElement('a');
-        link.href = "#day" + i;
-        link.className = "day-btn";
-        link.innerText = i;
-        link.onclick = () => loadDay(i);
-        grid.appendChild(link);
+        const btn = document.createElement('a');
+        btn.href = "#day" + i;
+        btn.className = "day-btn";
+        btn.id = "btn-" + i;
+        btn.innerText = i;
+        btn.onclick = (e) => {
+            e.preventDefault();
+            loadChallenge(i);
+            window.location.hash = "day" + i;
+        };
+        grid.appendChild(btn);
     }
 
-    function loadDay(day) {
+    function loadChallenge(day) {
         activeDay = day;
         const item = data[day];
-        document.getElementById('card').style.display = "block";
-        document.getElementById('result-msg').innerText = "";
-        document.getElementById('answer-input').value = "";
+        const msg = document.getElementById('result-msg');
         
+        document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn-' + day).classList.add('active');
+        
+        card.style.display = "block";
+        msg.style.display = "none";
+        document.getElementById('answer-input').value = "";
+
         if(item) {
             document.getElementById('subject').innerText = item.s;
             document.getElementById('day-title').innerText = "Défi du " + day + " Janvier";
             document.getElementById('question').innerText = item.q;
         } else {
-            document.getElementById('question').innerText = "Défi en cours de préparation par vos professeurs !";
+            document.getElementById('subject').innerText = "À venir";
+            document.getElementById('day-title').innerText = "Jour " + day;
+            document.getElementById('question').innerText = "Ce défi n'est pas encore disponible.";
         }
     }
 
-    function verify() {
-        const userAns = document.getElementById('answer-input').value.toLowerCase().trim();
+    function verifyAnswer() {
+        const input = document.getElementById('answer-input');
+        const userAns = input.value.toLowerCase().trim();
         const msg = document.getElementById('result-msg');
-        if(userAns === data[activeDay].a.toLowerCase()) {
-            msg.innerHTML = "✅ Excellent ! Bonne réponse.";
-            msg.style.color = "#059669";
+        const correct = data[activeDay]?.a.toLowerCase();
+
+        msg.style.display = "block";
+
+        if(userAns === correct) {
+            msg.innerText = "Félicitations ! C'est la bonne réponse.";
+            msg.style.backgroundColor = "#ecfdf5";
+            msg.style.color = var(--success);
         } else {
-            msg.innerHTML = "❌ Ce n'est pas tout à fait ça, réessaie !";
-            msg.style.color = "#dc2626";
+            msg.innerText = "Tentative incorrecte. Veuillez réessayer.";
+            msg.style.backgroundColor = "#fef2f2";
+            msg.style.color = var(--error);
         }
     }
+
+    window.onload = () => {
+        const hash = window.location.hash;
+        if(hash.startsWith("#day")) {
+            loadChallenge(parseInt(hash.replace("#day", "")));
+        }
+    };
 </script>
+
 </body>
 </html>
