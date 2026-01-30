@@ -3,194 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendrier de la Réussite - Officiel</title>
+    <title>Calendrier de la Réussite 2026</title>
     <style>
         :root {
-            --primary: #1e40af;
-            --primary-light: #dbeafe;
-            --accent: #3b82f6;
-            --success: #10b981;
-            --error: #ef4444;
-            --bg: #f1f5f9;
-            --surface: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
+            --primary: #2563eb;
+            --past: #e2e8f0;
+            --future: #1e293b;
+            --success: #059669;
+            --error: #dc2626;
+            --bg: #f8fafc;
         }
 
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background-color: var(--bg);
-            color: var(--text-main);
-            margin: 0;
-            display: flex;
-            justify-content: center;
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 800px; }
+        
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { color: var(--future); margin: 0; }
+
+        /* Grille */
+        .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-bottom: 30px; }
+        
+        .day-link {
+            aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+            text-decoration: none; font-weight: bold; border-radius: 12px; transition: 0.2s;
         }
 
-        .container {
-            width: 100%;
-            max-width: 900px;
-            padding: 40px 20px;
+        /* État : Passé */
+        .day-past { background: var(--past); color: #64748b; border: 1px solid #cbd5e1; }
+        
+        /* État : Aujourd'hui */
+        .day-current { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4); transform: scale(1.05); }
+
+        /* État : Futur (Verrouillé) */
+        .day-future { background: var(--future); color: #475569; cursor: not-allowed; pointer-events: none; opacity: 0.9; }
+
+        .day-link:hover:not(.day-future) { filter: brightness(0.9); transform: translateY(-2px); }
+
+        /* Carte de défi */
+        .card { 
+            background: white; border-radius: 20px; padding: 30px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); display: none;
+            border-top: 6px solid var(--primary);
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        h1 { font-size: 2.5rem; margin: 0; color: var(--primary); }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 10px;
-            margin-bottom: 30px;
-        }
-
-        .day-btn {
-            aspect-ratio: 1/1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--surface);
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: bold;
-            color: var(--text-main);
-            transition: 0.2s;
-        }
-
-        .day-btn:hover { border-color: var(--accent); transform: translateY(-2px); }
-        .day-btn.active { background: var(--primary); color: white; }
-
-        .challenge-card {
-            background: var(--surface);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-            display: none;
-        }
-
-        .badge {
-            background: var(--primary-light);
-            color: var(--primary);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        input {
-            width: 100%;
-            padding: 15px;
-            margin: 20px 0;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            box-sizing: border-box;
-        }
-
-        button {
-            width: 100%;
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        #result-msg {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-            font-weight: bold;
-            display: none;
-        }
-
-        @media (max-width: 600px) { .calendar-grid { grid-template-columns: repeat(5, 1fr); } }
+        .badge { background: #dbeafe; color: var(--primary); padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
+        input { width: 100%; padding: 15px; margin: 20px 0; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; }
+        button { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1rem; }
+        
+        #msg { margin-top: 20px; padding: 15px; border-radius: 10px; text-align: center; font-weight: bold; display: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1>Calendrier de la Réussite</h1>
-        <p>Gianni • Session Janvier 2026</p>
+        <h1>🗓️ Janvier 2026</h1>
+        <p>Gianni • Projet Collège</p>
     </header>
 
-    <nav class="calendar-grid" id="grid"></nav>
+    <div class="grid" id="calendarGrid"></div>
 
-    <div class="challenge-card" id="card">
+    <div class="card" id="challengeCard">
         <span class="badge" id="subject"></span>
-        <h2 id="day-title"></h2>
-        <p id="question"></p>
-        <input type="text" id="answer-input" placeholder="Ta réponse ici...">
-        <button onclick="verifyAnswer()">Vérifier</button>
-        <div id="result-msg"></div>
+        <h2 id="dayTitle"></h2>
+        <p id="questionText"></p>
+        <input type="text" id="answerInput" placeholder="Écris ta réponse ici...">
+        <button onclick="check()">Valider la réponse</button>
+        <div id="msg"></div>
     </div>
 </div>
 
 <script>
+    // --- CONFIGURATION ---
     const data = {
-        1: { s: "Maths", q: "Combien font 9 x 9 ?", a: "81" },
-        2: { s: "Anglais", q: "Comment dit-on 'Bonjour' en anglais ?", a: "hello" },
-        3: { s: "Histoire", q: "En quelle année a été découverte l'Amérique ?", a: "1492" }
-        // Ajoute tes jours ici
+        1: { s: "MATHS", q: "9 x 8 ?", a: "72" },
+        2: { s: "FRANÇAIS", q: "Antonyme de 'Clair' ?", a: "sombre" },
+        30: { s: "LOGIQUE", q: "Si aujourd'hui est vendredi, quel jour sera-t-on dans 2 jours ?", a: "dimanche" }
     };
 
-    const grid = document.getElementById('grid');
-    let activeDay = null;
+    // Pour le test, on force la date à aujourd'hui (Janvier 2026)
+    const today = new Date();
+    const currentDay = today.getDate(); 
+    const currentMonth = today.getMonth(); // 0 = Janvier
 
-    for(let i=1; i<=31; i++) {
+    const grid = document.getElementById('calendarGrid');
+
+    // --- GÉNÉRATION DU CALENDRIER ---
+    for (let i = 1; i <= 31; i++) {
         const btn = document.createElement('a');
-        btn.href = "#day" + i;
-        btn.className = "day-btn";
-        btn.id = "btn-" + i;
         btn.innerText = i;
-        btn.onclick = (e) => {
-            e.preventDefault();
-            loadDay(i);
-        };
+        btn.href = "#jour" + i;
+        btn.className = "day-link";
+
+        if (currentMonth > 0) { // Si on est après Janvier, tout est passé
+            btn.classList.add("day-past");
+        } else if (i < currentDay) {
+            btn.classList.add("day-past");
+        } else if (i === currentDay) {
+            btn.classList.add("day-current");
+        } else {
+            btn.classList.add("day-future");
+            btn.href = "javascript:void(0)"; // Désactive le lien
+        }
+
+        btn.onclick = () => { if(i <= currentDay) loadChallenge(i); };
         grid.appendChild(btn);
     }
 
-    function loadDay(day) {
-        activeDay = day;
+    // --- LOGIQUE DÉFI ---
+    function loadChallenge(day) {
         const item = data[day];
-        document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('btn-' + day).classList.add('active');
-        document.getElementById('card').style.display = "block";
-        document.getElementById('result-msg').style.display = "none";
-        document.getElementById('answer-input').value = "";
+        const card = document.getElementById('challengeCard');
+        const msg = document.getElementById('msg');
+        
+        card.style.display = "block";
+        msg.style.display = "none";
+        document.getElementById('answerInput').value = "";
+        window.location.hash = "jour" + day;
 
-        if(item) {
+        if (item) {
             document.getElementById('subject').innerText = item.s;
-            document.getElementById('day-title').innerText = "Jour " + day;
-            document.getElementById('question').innerText = item.q;
+            document.getElementById('dayTitle').innerText = "Défi du " + day + " Janvier";
+            document.getElementById('questionText').innerText = item.q;
+            document.getElementById('challengeCard').setAttribute("data-day", day);
         } else {
-            document.getElementById('subject').innerText = "À venir";
-            document.getElementById('question').innerText = "Pas encore de défi.";
+            document.getElementById('subject').innerText = "INFO";
+            document.getElementById('dayTitle').innerText = "Jour " + day;
+            document.getElementById('questionText').innerText = "Le professeur n'a pas encore déposé l'exercice.";
         }
     }
 
-    function verifyAnswer() {
-        const val = document.getElementById('answer-input').value.toLowerCase().trim();
-        const msg = document.getElementById('result-msg');
+    function check() {
+        const day = document.getElementById('challengeCard').getAttribute("data-day");
+        const val = document.getElementById('answerInput').value.toLowerCase().trim();
+        const msg = document.getElementById('msg');
+        
         msg.style.display = "block";
-
-        if(data[activeDay] && val === data[activeDay].a.toLowerCase()) {
-            msg.innerText = "✅ Bravo !";
-            msg.style.backgroundColor = "#d1fae5";
+        if (data[day] && val === data[day].a.toLowerCase()) {
+            msg.innerText = "✅ Bravo ! C'est correct.";
+            msg.style.background = "#d1fae5";
             msg.style.color = "#065f46";
         } else {
-            msg.innerText = "❌ Réessaie !";
-            msg.style.backgroundColor = "#fee2e2";
+            msg.innerText = "❌ Mauvaise réponse, essaie encore.";
+            msg.style.background = "#fee2e2";
             msg.style.color = "#991b1b";
         }
     }
+
+    // Gestion du lien direct au chargement
+    window.onload = () => {
+        const h = window.location.hash;
+        if (h.includes("#jour")) {
+            const d = parseInt(h.replace("#jour", ""));
+            if (d <= currentDay) loadChallenge(d);
+        }
+    };
 </script>
+
 </body>
 </html>
