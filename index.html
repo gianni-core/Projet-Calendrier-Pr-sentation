@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendrier de la Réussite 2026</title>
+    <title>Calendrier (By Gianni 4A 2025 — 2026)</title>
     <style>
         :root {
             --primary: #2563eb;
@@ -20,7 +20,6 @@
         header { text-align: center; margin-bottom: 30px; }
         h1 { color: var(--future); margin: 0; }
 
-        /* Grille */
         .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-bottom: 30px; }
         
         .day-link {
@@ -28,18 +27,15 @@
             text-decoration: none; font-weight: bold; border-radius: 12px; transition: 0.2s;
         }
 
-        /* État : Passé */
         .day-past { background: var(--past); color: #64748b; border: 1px solid #cbd5e1; }
         
-        /* État : Aujourd'hui */
         .day-current { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4); transform: scale(1.05); }
 
-        /* État : Futur (Verrouillé) */
+
         .day-future { background: var(--future); color: #475569; cursor: not-allowed; pointer-events: none; opacity: 0.9; }
 
         .day-link:hover:not(.day-future) { filter: brightness(0.9); transform: translateY(-2px); }
 
-        /* Carte de défi */
         .card { 
             background: white; border-radius: 20px; padding: 30px; 
             box-shadow: 0 10px 25px rgba(0,0,0,0.05); display: none;
@@ -58,7 +54,7 @@
 <div class="container">
     <header>
         <h1>🗓️ Janvier 2026</h1>
-        <p>Gianni • Projet Collège</p>
+        <p>Gianni • Projet Calendrier</p>
     </header>
 
     <div class="grid" id="calendarGrid"></div>
@@ -77,18 +73,16 @@
     // --- CONFIGURATION ---
     const data = {
         1: { s: "MATHS", q: "9 x 8 ?", a: "72" },
-        2: { s: "FRANÇAIS", q: "Antonyme de 'Clair' ?", a: "sombre" },
+        2: { s: "FRANÇAIS", q: "Classe gramaticale de 'Bleu' ?", a: "Adjectif" },
         30: { s: "LOGIQUE", q: "Si aujourd'hui est vendredi, quel jour sera-t-on dans 2 jours ?", a: "dimanche" }
     };
 
-    // Pour le test, on force la date à aujourd'hui (Janvier 2026)
     const today = new Date();
     const currentDay = today.getDate(); 
     const currentMonth = today.getMonth(); // 0 = Janvier
 
     const grid = document.getElementById('calendarGrid');
 
-    // --- GÉNÉRATION DU CALENDRIER ---
     for (let i = 1; i <= 31; i++) {
         const btn = document.createElement('a');
         btn.innerText = i;
@@ -110,7 +104,6 @@
         grid.appendChild(btn);
     }
 
-    // --- LOGIQUE DÉFI ---
     function loadChallenge(day) {
         const item = data[day];
         const card = document.getElementById('challengeCard');
@@ -150,7 +143,6 @@
         }
     }
 
-    // Gestion du lien direct au chargement
     window.onload = () => {
         const h = window.location.hash;
         if (h.includes("#jour")) {
