@@ -2,63 +2,123 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Calendrier de Janvier</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendrier de Janvier - Défis Collège</title>
     <style>
-        body { font-family: sans-serif; text-align: center; background-color: #f0f4f8; }
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --success: #27ae60;
+        }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; color: var(--primary); margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: auto; }
+        
+        /* Grille du calendrier */
         .grid { 
             display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); 
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); 
             gap: 10px; 
-            padding: 20px; 
-            max-width: 800px; 
-            margin: auto; 
+            margin-bottom: 30px; 
         }
-        .day { 
-            background-color: #3498db; 
-            color: white; 
-            padding: 30px 10px; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            font-weight: bold;
-            transition: transform 0.2s;
+        .day-link { 
+            background: white; border: 2px solid var(--accent); color: var(--accent);
+            padding: 15px; border-radius: 10px; text-decoration: none;
+            font-weight: bold; text-align: center; transition: 0.3s;
         }
-        .day:hover { background-color: #2980b9; transform: scale(1.05); }
+        .day-link:hover { background: var(--accent); color: white; }
+
+        /* Zone du défi */
+        #challenge-box { 
+            background: white; padding: 30px; border-radius: 15px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center;
+            min-height: 200px;
+        }
+        input { padding: 10px; border: 2px solid #ddd; border-radius: 5px; width: 60%; margin-top: 10px; }
+        button { padding: 10px 20px; background: var(--accent); color: white; border: none; border-radius: 5px; cursor: pointer; }
+        #feedback { margin-top: 15px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <h1>❄️ Calendrier de l'Avent de Janvier ❄️</h1>
-    <p>Clique sur le jour pour voir ton défi !</p>
+<div class="container">
+    <h1>🎯 Calendrier des Défis de Janvier</h1>
+    
+    <div class="grid" id="nav-grid"></div>
 
-    <div class="grid" id="calendar">
+    <div id="challenge-box">
+        <h2 id="title">Choisis un jour pour commencer !</h2>
+        <p id="question">L'exercice s'affichera ici.</p>
+        <div id="input-zone" style="display:none;">
+            <input type="text" id="user-answer" placeholder="Ta réponse ici...">
+            <button onclick="checkAnswer()">Vérifier</button>
+            <p id="feedback"></p>
         </div>
+    </div>
+</div>
 
-    <script>
-        const calendar = document.getElementById('calendar');
+<script>
+    // Configuration des jours
+    const data = {
+        1: { q: "Maths : Combien font $12 \times 12$ ?", a: "144", t: "Calcul Mental" },
+        2: { q: "Anglais : Traduis le mot 'Winter'.", a: "hiver", t: "Vocabulaire" },
+        3: { q: "Français : Quel est le participe passé du verbe 'Prendre' ?", a: "pris", t: "Grammaire" },
+        // Ajoute les autres jours ici...
+    };
+
+    const grid = document.getElementById('nav-grid');
+    let currentDay = null;
+
+    // Création des boutons du calendrier
+    for (let i = 1; i <= 31; i++) {
+        let a = document.createElement('a');
+        a.href = "#jour" + i;
+        a.className = "day-link";
+        a.innerText = i;
+        a.onclick = () => loadChallenge(i);
+        grid.appendChild(a);
+    }
+
+    function loadChallenge(day) {
+        currentDay = day;
+        const challenge = data[day];
+        const box = document.getElementById('input-zone');
+        const feedback = document.getElementById('feedback');
         
-        // Liste de petits défis (tu peux les changer !)
-        const defis = [
-            "Maths : Calcule 15% de 80.",
-            "Français : Trouve 3 synonymes du mot 'Grand'.",
-            "Anglais : Comment dit-on 'J'ai faim' ?",
-            "Histoire : En quelle année a commencé la Révolution Française ?",
-            "Géo : Quelle est la capitale de l'Italie ?",
-            "Sciences : De quoi est composée une molécule d'eau ?",
-            // ... Ajoute tes 31 défis ici
-        ];
-
-        for (let i = 1; i <= 31; i++) {
-            let div = document.createElement('div');
-            div.className = 'day';
-            div.innerHTML = i;
-            div.onclick = function() {
-                // On récupère le défi correspondant au jour (i-1 car la liste commence à 0)
-                let message = defis[i-1] || "Défi à venir !";
-                alert("Jour " + i + " : " + message);
-            };
-            calendar.appendChild(div);
+        if (challenge) {
+            document.getElementById('title').innerText = "Jour " + day + " : " + challenge.t;
+            document.getElementById('question').innerText = challenge.q;
+            box.style.display = "block";
+            document.getElementById('user-answer').value = "";
+            feedback.innerText = "";
+        } else {
+            document.getElementById('title').innerText = "Jour " + day;
+            document.getElementById('question').innerText = "Défi bientôt disponible !";
+            box.style.display = "none";
         }
-    </script>
+    }
+
+    function checkAnswer() {
+        const userVal = document.getElementById('user-answer').value.toLowerCase().trim();
+        const feedback = document.getElementById('feedback');
+        
+        if (userVal === data[currentDay].a.toLowerCase()) {
+            feedback.innerText = "✅ Bravo ! C'est la bonne réponse.";
+            feedback.style.color = "green";
+        } else {
+            feedback.innerText = "❌ Réessaie encore !";
+            feedback.style.color = "red";
+        }
+    }
+
+    // Gestion de l'ancre au chargement de la page (ex: site.com/#jour1)
+    window.onload = () => {
+        const hash = window.location.hash;
+        if (hash.startsWith("#jour")) {
+            const day = hash.replace("#jour", "");
+            loadChallenge(day);
+        }
+    };
+</script>
 
 </body>
 </html>
